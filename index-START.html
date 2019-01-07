@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Whack A Mole!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+  <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+  <div class = "board">
+  <h1>Whack-a-mole! </h1>
+  <h2> Score: <span class="score">0</span> </h2>
+  <h2> Time : <span class="time">0</span> </h2> </div>
+  
+  <div class="game">
+    <div class="hole hole1">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>
+    <div class="hole hole2">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>
+    <div class="hole hole3">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>
+    <div class="hole hole4">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>
+    <div class="hole hole5">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>
+    <div class="hole hole6">
+      <div class="mole"></div>
+      <div class="poop"></div>
+    </div>   
+  </div>
+
+  <div class = button>
+    <button onclick="startGame()">Play</button>
+  </div>
+
+  
+
+<script>
+  const holes = document.querySelectorAll('.hole');
+  const scoreBoard = document.querySelector('.score');
+  const moles = document.querySelectorAll('.mole');
+  const poop = document.querySelectorAll('.poop');
+
+
+  let lastHole;
+  let timeUp = false;
+  let score = 0; 
+
+  function randomTime (min, max){
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  function randomFrom(array) {
+    return array[Math.floor(Math.random() * array.length)];}
+
+  function randomHole(holes){
+    //console.log(holes.length);
+    const idx = Math.floor(Math.random() * holes.length)
+    const hole = holes[idx];
+    if(hole === lastHole){
+      //console.log('same one');
+      randomHole(holes);
+    }
+    //console.log(hole);
+    lastHole = hole;
+    return hole;
+  }
+
+  function peep1(){
+    const time = randomTime(200,1000);
+    const hole = randomHole(holes);
+
+    /*function randomFrom(array) {
+    return array[Math.floor(Math.random() * array.length)];}
+
+    var randomIcon = [poop, moles];
+    var icon = randomFrom(randomIcon); */
+
+
+    //console.log(time,hole);
+    hole.classList.add('up');
+    setTimeout(() => {
+      hole.classList.remove('up');
+      if(!timeUp) random1();
+        //timer(playTime);}
+    }, time)
+  }
+
+ function peep2(){
+    const time = randomTime(200,1000);
+    const hole = randomHole(holes);
+    //console.log(time,hole);
+    hole.classList.add('up1');
+    setTimeout(() => {
+      hole.classList.remove('up1');
+      if(!timeUp) 
+        random1();
+        //timer(playTime);}
+    }, time)
+  }
+
+ 
+
+  function random1() {
+    var func = randomFrom([peep1,peep2]);
+    (func)();
+}
+
+  function startGame(){
+    const playTime = 60;
+    scoreBoard.textContent = 0;
+    timeup = false;
+    //peep();
+    random1();
+    timer(playTime);
+    setTimeout(() => timeUp = true, playTime*1000)
+  }
+
+  function bonk(e){
+    //console.log(e);
+    if(!e.isTrusted) return; //cheater
+    score++;
+    this.classList.remove('up');
+    scoreBoard.textContent = score;
+  }
+
+  function bonk1(e){
+    //console.log(e);
+    if(!e.isTrusted) return; //cheater
+    score--;
+    this.classList.remove('up1');
+    scoreBoard.textContent = score;
+  }
+
+
+
+  moles.forEach(mole => mole.addEventListener('click' ,bonk))
+  poop.forEach(poop => poop.addEventListener('click' ,bonk1))
+  
+
+const timerDisplay = document.querySelector('.time');
+let countdown;
+  function timer(seconds){
+    clearInterval(countdown);
+    const now = Date.now();
+    const then = now + seconds *1000;//as it is in ms
+    //console.log({now, then})
+    displayTimeLeft(seconds);
+    //displayEndTime(then);
+
+countdown = setInterval(() =>
+{
+    const secondsLeft = Math.round((then - Date.now())/ 1000);
+    //check if we should stop it
+    if(secondsLeft < 0){
+        clearInterval(countdown);
+        return;
+    }
+    displayTimeLeft(secondsLeft);
+}, 1000);
+
+}
+
+
+function displayTimeLeft(seconds){
+   const minutes = Math.floor(seconds / 60);
+   const remainderSeconds = seconds % 60;
+   //console.log({minutes , remainderSeconds});
+   const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+   //document.title = display;
+   timerDisplay.textContent = display;
+//console.log(seconds);
+}
+
+
+
+</script>
+</body>
+</html>
